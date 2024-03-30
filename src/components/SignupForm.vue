@@ -1,5 +1,8 @@
 <script setup>
     import { ref } from 'vue'
+    import { useToast } from "vue-toastification";
+
+    const toast = useToast()
 
     let showPassword = ref(false)
     let showConfirmPassword = ref(false)
@@ -16,13 +19,20 @@
     let confirmPasswordError = ref('')
     let confirmPasswordCheckFill = ref('rgb(98, 116, 139)')
 
+    let hasFieldErrors = ref(true)
+
     const fullname = ref('')
     const email = ref('')
     const password = ref('')
     const confirmPassword = ref('')
 
     const submitHandle = () => {
-        alert('clicked')
+        console.log(hasFieldErrors.value)
+        if(hasFieldErrors.value === true) {
+            toast.error(`You haven't completed the form`)
+        } else {
+            toast.success('Sign Up Successfully')
+        }
     }
 
     const togglePassword = () => {
@@ -36,6 +46,7 @@
     // Nên gôm các biến liên quan đến fullname trong validation vào 1 object
     const fullnameValidation = () => {
         fullnameError.value = ''
+        hasFieldErrors.value = false
         const fullnameRegex = /^[a-zA-Z\s]*$/
         const errors = {
             'empty': 'Full name could not be empty',
@@ -52,15 +63,18 @@
         }
 
         // check if fullnameError is empty => mark the tick blue
+        // no error:
         if(fullnameError.value == '' || fullnameError.value == null) {
-            fullnameCheckFill.value = 'rgb(50, 138, 241)'
+            fullnameCheckFill.value = 'rgb(50, 138, 241)' // blue
         } else {
             fullnameCheckFill.value = 'rgb(98, 116, 139)'
+            hasFieldErrors.value = true
         }
     }
 
     const emailValidation = () => {
         emailError.value = ''
+        hasFieldErrors.value = false
         const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
         const errors = {
             'empty': 'Email could not be empty',
@@ -79,11 +93,13 @@
             emailCheckFill.value = 'rgb(50, 138, 241)'
         } else {
             emailCheckFill.value = 'rgb(98, 116, 139)'
+            hasFieldErrors.value = true
         }
     }
 
     const passwordValidation = () => {
         passwordError.value = ''
+        hasFieldErrors.value = false
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%])[^\s]{8,}$/
 
         if(!passwordRegex.test(password.value)) { 
@@ -94,11 +110,13 @@
             passwordCheckFill.value = 'rgb(50, 138, 241)'
         } else {
             passwordCheckFill.value = 'rgb(98, 116, 139)'
+            hasFieldErrors.value = true
         }
     }
 
     const confirmPasswordValidation = () => {
         confirmPasswordError.value = ''
+        hasFieldErrors.value = false
         const errors = {
             'empty': 'Please enter your password again',
             'unmatch': 'Your passwords are not match'
@@ -116,6 +134,7 @@
             confirmPasswordCheckFill.value = 'rgb(50, 138, 241)'
         } else {
             confirmPasswordCheckFill.value = 'rgb(98, 116, 139)'
+            hasFieldErrors.value = true
         }
     }
 
