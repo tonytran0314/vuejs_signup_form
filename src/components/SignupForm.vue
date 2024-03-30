@@ -204,7 +204,7 @@
                 <span v-show="emailError" class="field_error">{{ emailError }}</span>
 
             </div>
-            <div class="field password_field">
+            <div class="field">
                 <label for="password">Password</label>
                 <div class="input_field">
                     <input 
@@ -298,7 +298,7 @@
                     </ul>
                 </span>
             </div>
-            <div class="field password_field">
+            <div class="field">
                 <label for="confirm_password">Confirm Password</label>
                 <div class="input_field">
                     <input 
@@ -405,6 +405,7 @@
 
     .form_body {
         display: flex;
+        flex-wrap: wrap;
         flex-direction: column;
         gap: 24px;
     }
@@ -416,15 +417,14 @@
     }
 
     .input_field {
-        position: relative;
         border-bottom: 2px solid rgb(16, 32, 53);
         /* background-color: red; */
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
     }
 
     .input_icon {
-        position: absolute;
-        right: 0;
-        top: 0;
         /* background-color: skyblue; */
         height: 24px;
         display: flex;
@@ -446,11 +446,7 @@
         border: none;
         color: rgb(255, 255, 255);
         padding: 4px 0;
-        width: calc(100% - 32px);
-    }
-
-    .password_field input {
-        width: calc(100% - 72px);
+        width: 100%;
     }
 
     .field input:focus {
@@ -479,10 +475,15 @@
 
     .field_error {
         color: rgb(243, 72, 125);
-        /* display: none; */
     }
 
     .field_error ul {
         margin-left: 32px;
+    }
+
+    @media (max-width: 524px) {
+        #signup_form {
+            width: 100%;
+        }
     }
 </style>
