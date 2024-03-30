@@ -1,11 +1,28 @@
 <script setup>
-    import {ref} from 'vue';
+    import { ref } from 'vue'
 
-    let showPassword = ref(false);
-    let showConfirmPassword = ref(false);
+    let showPassword = ref(false)
+    let showConfirmPassword = ref(false)
+
+    let fullnameError = ref('')
+    let fullnameCheckFill = ref('rgb(98, 116, 139)')
+
+    let emailError = ref('')
+    let emailCheckFill = ref('rgb(98, 116, 139)')
+    
+    let passwordError = ref('')
+    let passwordCheckFill = ref('rgb(98, 116, 139)')
+    
+    let confirmPasswordError = ref('')
+    let confirmPasswordCheckFill = ref('rgb(98, 116, 139)')
+
+    const fullname = ref('')
+    const email = ref('')
+    const password = ref('')
+    const confirmPassword = ref('')
 
     const submitHandle = () => {
-        alert('Clicked')
+        alert('clicked')
     }
 
     const togglePassword = () => {
@@ -15,6 +32,94 @@
     const toggleConfirmPassword = () => {
         showConfirmPassword.value = !showConfirmPassword.value
     }
+
+    // Nên gôm các biến liên quan đến fullname trong validation vào 1 object
+    const fullnameValidation = () => {
+        fullnameError.value = ''
+        const fullnameRegex = /^[a-zA-Z\s]*$/
+        const errors = {
+            'empty': 'Full name could not be empty',
+            'invalid': 'Full name contains invalid characters'
+        }
+        // check if full name is empty
+        if(fullname.value == null || fullname.value == '') { 
+            fullnameError.value = errors['empty'] 
+        }
+
+        // check if full name contains invalid characters
+        if(!fullnameRegex.test(fullname.value)) { 
+            fullnameError.value = errors['invalid'] 
+        }
+
+        // check if fullnameError is empty => mark the tick blue
+        if(fullnameError.value == '' || fullnameError.value == null) {
+            fullnameCheckFill.value = 'rgb(50, 138, 241)'
+        } else {
+            fullnameCheckFill.value = 'rgb(98, 116, 139)'
+        }
+    }
+
+    const emailValidation = () => {
+        emailError.value = ''
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+        const errors = {
+            'empty': 'Email could not be empty',
+            'invalid': 'Invalid or existed email'
+        }
+        
+        if(email.value == null || email.value == '') { 
+            emailError.value = errors['empty'] 
+        }
+
+        if(!emailRegex.test(email.value)) { 
+            emailError.value = errors['invalid'] 
+        }
+
+        if(emailError.value == '' || emailError.value == null) {
+            emailCheckFill.value = 'rgb(50, 138, 241)'
+        } else {
+            emailCheckFill.value = 'rgb(98, 116, 139)'
+        }
+    }
+
+    const passwordValidation = () => {
+        passwordError.value = ''
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%])[^\s]{8,}$/
+
+        if(!passwordRegex.test(password.value)) { 
+            passwordError.value = true 
+        }
+
+        if(passwordError.value == '' || passwordError.value == null) {
+            passwordCheckFill.value = 'rgb(50, 138, 241)'
+        } else {
+            passwordCheckFill.value = 'rgb(98, 116, 139)'
+        }
+    }
+
+    const confirmPasswordValidation = () => {
+        confirmPasswordError.value = ''
+        const errors = {
+            'empty': 'Please enter your password again',
+            'unmatch': 'Your passwords are not match'
+        }
+
+        if(confirmPassword.value == null || confirmPassword.value == '') { 
+            confirmPasswordError.value = errors['empty'] 
+        }
+
+        if(password.value !== confirmPassword.value ) { 
+            confirmPasswordError.value = errors['unmatch'] 
+        }
+
+        if(confirmPasswordError.value == '' || confirmPasswordError.value == null) {
+            confirmPasswordCheckFill.value = 'rgb(50, 138, 241)'
+        } else {
+            confirmPasswordCheckFill.value = 'rgb(98, 116, 139)'
+        }
+    }
+
+
 </script>
 
 <template>
@@ -25,6 +130,8 @@
                 <label for="fullname">Full Name</label>
                 <div class="input_field">
                     <input 
+                        v-model.trim="fullname"
+                        @blur="fullnameValidation"
                         type="text" 
                         id="fullname" 
                         name="fullname"
@@ -36,7 +143,7 @@
                             width="24" height="24" 
                             viewBox="0 0 48 48">
                                 <path 
-                                    fill="rgb(98, 116, 139)" 
+                                    :fill="fullnameCheckFill" 
                                     d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z">
                                 </path>
                                 <path 
@@ -46,12 +153,14 @@
                         </svg>
                     </div>
                 </div>
-                <span class="field_error">asdkajs</span>
+                <span v-show="fullnameError" class="field_error">{{ fullnameError }}</span>
             </div>
             <div class="field">
                 <label for="email">Email</label>
                 <div class="input_field">
                     <input 
+                        v-model.trim="email"
+                        @blur="emailValidation"
                         type="text" 
                         id="email" 
                         name="email"
@@ -63,7 +172,7 @@
                             width="24" height="24" 
                             viewBox="0 0 48 48">
                                 <path 
-                                    fill="rgb(98, 116, 139)" 
+                                    :fill="emailCheckFill" 
                                     d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z">
                                 </path>
                                 <path 
@@ -73,13 +182,16 @@
                         </svg>
                     </div>
                 </div>
-                <span class="field_error">asdkajs</span>
+                <span v-show="emailError" class="field_error">{{ emailError }}</span>
+
             </div>
             <div class="field password_field">
                 <label for="password">Password</label>
                 <div class="input_field">
                     <input 
                         :type="showPassword ? 'text ' : 'password'" 
+                        v-model.trim="password"
+                        @blur="passwordValidation"
                         id="password" 
                         name="fullname"
                         placeholder="Enter Password">
@@ -146,7 +258,7 @@
                             width="24" height="24" 
                             viewBox="0 0 48 48">
                                 <path 
-                                    fill="rgb(98, 116, 139)" 
+                                    :fill="passwordCheckFill" 
                                     d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z">
                                 </path>
                                 <path 
@@ -156,13 +268,24 @@
                         </svg>
                     </div>
                 </div>
-                <span class="field_error">asdkajs</span>
+                <span v-show="passwordError" class="field_error">
+                    Your password must have:
+                    <ul>
+                        <li>At least 8 letters</li>
+                        <li>Lowercase letters</li>
+                        <li>Uppercase letters</li>
+                        <li>Numbers</li>
+                        <li>Special letters: !, @, #, $, %</li>
+                    </ul>
+                </span>
             </div>
             <div class="field password_field">
                 <label for="confirm_password">Confirm Password</label>
                 <div class="input_field">
                     <input 
-                        :type="showConfirmPassword ? 'text ' : 'password'" 
+                        :type="showConfirmPassword ? 'text ' : 'password'"
+                        v-model.trim="confirmPassword"
+                        @blur="confirmPasswordValidation"
                         id="confirm_password" 
                         name="confirm_password"
                         placeholder="Enter Password Again">
@@ -229,7 +352,7 @@
                             width="24" height="24" 
                             viewBox="0 0 48 48">
                                 <path 
-                                    fill="rgb(98, 116, 139)" 
+                                    :fill="confirmPasswordCheckFill" 
                                     d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z">
                                 </path>
                                 <path 
@@ -239,7 +362,7 @@
                         </svg>
                     </div>
                 </div>
-                <span class="field_error">asdkajs</span>
+                <span v-show="confirmPasswordError" class="field_error">{{ confirmPasswordError }}</span>
             </div>
         </div>
         <button 
@@ -337,6 +460,10 @@
 
     .field_error {
         color: rgb(243, 72, 125);
-        display: none;
+        /* display: none; */
+    }
+
+    .field_error ul {
+        margin-left: 32px;
     }
 </style>

@@ -13,7 +13,7 @@
     width: auto;
     height: auto;
     background-color: rgb(14, 23, 39);
-    padding: 120px;
+    padding: 56px;
     border-radius: 16px;
   }
 </style>
