@@ -10,11 +10,6 @@
 
     let hasFieldErrors = ref(true)
 
-    const fullname = ref('')
-    const email = ref('')
-    const password = ref('')
-    const confirmPassword = ref('')
-
     const submitHandle = () => {
         console.log(hasFieldErrors.value)
         if(hasFieldErrors.value === true) {
@@ -22,10 +17,6 @@
         } else {
             toast.success('Sign Up Successfully')
         }
-    }
-
-    const togglePassword = () => {
-        showPassword.value = !showPassword.value
     }
 
     // Nên gôm các biến liên quan đến fullname trong validation vào 1 object

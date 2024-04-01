@@ -23,7 +23,6 @@
         }
     })
 
-    const fieldModel = ref('')
 </script>
 
 <template>
@@ -31,7 +30,7 @@
         <label :for="props.model">{{ props.label }}</label>
         <div class="input_field">
             <input 
-                v-model.trim="fieldModel"
+                v-model.trim="props.model"
                 @blur="fullnameValidation"
                 :type="props.type" 
                 :name="props.model"
