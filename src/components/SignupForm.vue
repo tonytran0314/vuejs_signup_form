@@ -89,10 +89,19 @@
         }
 
         const errors_list = {
-            'invalid': 'Invalid password'
+            'empty': 'Password could not be empty',
+            'invalid': 'Password contains invalid characters'
         }
 
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%])[^\s]{8,}$/
+        // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%])[^\s]{8,}$/
+        const passwordRegex = /^[a-zA-Z0-9\!@#$%]*$/
+
+        if(password == null || password == '') { 
+            error = {
+                'exist': true,
+                'message': errors_list.empty
+            }
+        }
 
         if(!passwordRegex.test(password)) { 
             error = {
@@ -100,6 +109,7 @@
                 'message': errors_list.invalid
             }
         }
+
         return error;
     }
 
@@ -110,7 +120,15 @@
         }
 
         const errors_list = {
+            'empty': 'Password could not be empty',
             'unmatch': 'Your passwords are not match'
+        }
+
+        if(confirmPassword == null || confirmPassword == '') { 
+            error = {
+                'exist': true,
+                'message': errors_list.empty
+            }
         }
 
         if(password.value !== confirmPassword ) { 
