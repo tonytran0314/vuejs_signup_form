@@ -1,32 +1,54 @@
 <script setup>
-    import { ref, defineProps, computed } from 'vue'
+    import { ref, reactive, computed } from 'vue'
     import EyeSymbol from './EyeSymbol.vue'
     import EyeSlashSymbol from './EyeSlashSymbol.vue'
-
-    let fullnameError = ref('')
-    let checkFill = ref('rgb(98, 116, 139)')
 
     const props = defineProps({
         label: {
             type: String,
             required: true
         },
-        model: {
+        modelValue: {
             type: String,
             required: true
         },
         placeholder: {
             type: String,
             required: true
+        },
+        name: {
+            type: String,
+            required: true
+        },
+        validator: {
+            type: Function,
+            required: true
         }
     })
 
-    const fieldModel = ref('')
-
     let showPassword = ref(false)
-
     const togglePassword = () => showPassword.value = !showPassword.value
     const inputType = computed(() =>  showPassword.value ? 'text' : 'password')
+
+    const error = reactive({
+        'exist': true,
+        'message': null
+    })
+
+    const emit = defineEmits(['update:modelValue']) // [Emit] part 1 (these two parts must be together)
+
+    const blueColor = ref('rgb(50, 138, 241)') // completed color
+    const grayColor = ref('rgb(98, 116, 139)')
+
+    const updateModelValueAndValidate = (event) => {
+        const inputValue = event.target.value.trim()
+
+        error.exist = props.validator(inputValue).exist
+        error.message = props.validator(inputValue).message
+
+        emit('update:modelValue', inputValue) // [Emit] part 2 (these two parts must be together)
+    }
+
     
 </script>
 
@@ -35,11 +57,12 @@
         <label :for="props.model">{{ props.label }}</label>
         <div class="input_field">
             <input 
-                v-model.trim="fieldModel"
-                @blur="fullnameValidation"
+                :value="props.modelValue"
+                @input="updateModelValueAndValidate"
+                @blur="updateModelValueAndValidate"
                 :type="inputType" 
-                :name="props.model"
-                :placeholder="props.placeholder">
+                :name="props.name"
+                :placeholder="props.placeholder" />
             <div class="input_icon">
                 
                 <EyeSymbol v-if="showPassword" @toggle-password-visibility="togglePassword" /> 
@@ -51,7 +74,7 @@
                     width="24" height="24" 
                     viewBox="0 0 48 48">
                         <path 
-                            :fill="checkFill" 
+                            :fill="error.exist ? grayColor : blueColor"
                             d="M44,24c0,11.045-8.955,20-20,20S4,35.045,4,24S12.955,4,24,4S44,12.955,44,24z">
                         </path>
                         <path 
@@ -61,7 +84,7 @@
                 </svg>
             </div>
         </div>
-        <span v-show="fullnameError" class="field_error">{{ fullnameError }}</span>
+        <span class="field_error">{{ error.message }}</span>
     </div>
 </template>
 

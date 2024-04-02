@@ -19,101 +19,108 @@
         }
     }
 
+    const completedFieldColor = ref('rgb(50, 138, 241)')
+    const notcompletedFieldColor = ref('rgb(98, 116, 139)')
+    
+    const fullname = ref('')
+    const email = ref('')
+    const password = ref('')
+    const confirmPassword = ref('')
+
     // Nên gôm các biến liên quan đến fullname trong validation vào 1 object
-    const fullnameValidation = () => {
-        fullnameError.value = ''
-        hasFieldErrors.value = false
-        const fullnameRegex = /^[a-zA-Z\s]*$/
-        const errors = {
+    const fullnameValidation = (fullname) => {
+        let error = {
+            'exist': false,
+            'message': null
+        }
+
+        const errors_list = {
             'empty': 'Full name could not be empty',
             'invalid': 'Full name contains invalid characters'
         }
+
+        const fullnameRegex = /^[a-zA-Z\s]*$/
+
         // check if full name is empty
-        if(fullname.value == null || fullname.value == '') { 
-            fullnameError.value = errors['empty'] 
+        if(fullname == null || fullname == '') { 
+            error = {
+                'exist': true,
+                'message': errors_list.empty
+            }
         }
 
-        // check if full name contains invalid characters
-        if(!fullnameRegex.test(fullname.value)) { 
-            fullnameError.value = errors['invalid'] 
+        // check if full name contains invalid characters (valid: a-z, A-Z and space)
+        if(!fullnameRegex.test(fullname)) { 
+            error = {
+                'exist': true,
+                'message': errors_list.invalid
+            }
         }
 
-        // check if fullnameError is empty => mark the tick blue
-        // no error:
-        if(fullnameError.value == '' || fullnameError.value == null) {
-            fullnameCheckFill.value = 'rgb(50, 138, 241)' // blue
-        } else {
-            fullnameCheckFill.value = 'rgb(98, 116, 139)'
-            hasFieldErrors.value = true
-        }
+        return error;
     }
 
-    const emailValidation = () => {
-        emailError.value = ''
-        hasFieldErrors.value = false
+    const emailValidation = (email) => {
+        let error = {
+            'exist': false,
+            'message': null
+        }
+
+        const errors_list = {
+            'invalid': 'Invalid email'
+        }
+
         const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
-        const errors = {
-            'empty': 'Email could not be empty',
-            'invalid': 'Invalid or existed email'
-        }
-        
-        if(email.value == null || email.value == '') { 
-            emailError.value = errors['empty'] 
+
+        if(!emailRegex.test(email)) { 
+            error = {
+                'exist': true,
+                'message': errors_list.invalid
+            }
         }
 
-        if(!emailRegex.test(email.value)) { 
-            emailError.value = errors['invalid'] 
-        }
-
-        if(emailError.value == '' || emailError.value == null) {
-            emailCheckFill.value = 'rgb(50, 138, 241)'
-        } else {
-            emailCheckFill.value = 'rgb(98, 116, 139)'
-            hasFieldErrors.value = true
-        }
+        return error;
     }
 
-    const passwordValidation = () => {
-        passwordError.value = ''
-        hasFieldErrors.value = false
+    const passwordValidation = (password) => {
+        let error = {
+            'exist': false,
+            'message': null
+        }
+
+        const errors_list = {
+            'invalid': 'Invalid password'
+        }
+
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%])[^\s]{8,}$/
 
-        if(!passwordRegex.test(password.value)) { 
-            passwordError.value = true 
+        if(!passwordRegex.test(password)) { 
+            error = {
+                'exist': true,
+                'message': errors_list.invalid
+            }
         }
-
-        if(passwordError.value == '' || passwordError.value == null) {
-            passwordCheckFill.value = 'rgb(50, 138, 241)'
-        } else {
-            passwordCheckFill.value = 'rgb(98, 116, 139)'
-            hasFieldErrors.value = true
-        }
+        return error;
     }
 
-    const confirmPasswordValidation = () => {
-        confirmPasswordError.value = ''
-        hasFieldErrors.value = false
-        const errors = {
-            'empty': 'Please enter your password again',
+    const confirmPasswordValidation = (confirmPassword) => {
+        let error = {
+            'exist': false,
+            'message': null
+        }
+
+        const errors_list = {
             'unmatch': 'Your passwords are not match'
         }
 
-        if(confirmPassword.value == null || confirmPassword.value == '') { 
-            confirmPasswordError.value = errors['empty'] 
+        if(password.value !== confirmPassword ) { 
+            error = {
+                'exist': true,
+                'message': errors_list.unmatch
+            }
         }
-
-        if(password.value !== confirmPassword.value ) { 
-            confirmPasswordError.value = errors['unmatch'] 
-        }
-
-        if(confirmPasswordError.value == '' || confirmPasswordError.value == null) {
-            confirmPasswordCheckFill.value = 'rgb(50, 138, 241)'
-        } else {
-            confirmPasswordCheckFill.value = 'rgb(98, 116, 139)'
-            hasFieldErrors.value = true
-        }
+        return error
     }
-
 
 </script>
 
@@ -123,22 +130,30 @@
         <div class="form_body">
             <FieldBase 
                 label="Full Name"
-                model="fullname"
+                v-model="fullname"
                 placeholder="Enter Full Name"
-                type="text" />
+                type="text" 
+                name="fullname"
+                :validator="fullnameValidation" />
             <FieldBase 
                 label="Email"
-                model="email"
+                v-model="email"
                 placeholder="Enter Email"
-                type="text" />
+                type="text"
+                name="email"
+                :validator="emailValidation" />
             <Password 
                 label="Password"
-                model="password"
-                placeholder="Enter Password" />
+                v-model="password"
+                name="password"
+                placeholder="Enter Password"
+                :validator="passwordValidation" />
             <ConfirmPassword 
                 label="Confirm Password"
-                model="confirmPassword"
-                placeholder="Confirm Password" />
+                v-model="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                :validator="confirmPasswordValidation" />
         </div>
         <button 
             type="submit"
