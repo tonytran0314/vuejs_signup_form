@@ -1,5 +1,7 @@
 <script setup>
     import { ref, reactive } from 'vue'
+    import EyeSymbol from './icon/EyeSymbol.vue';
+    import EyeSlashSymbol from './icon/EyeSlashSymbol.vue';
 
     const props = defineProps({
         label: {
@@ -25,15 +27,30 @@
         validator: {
             type: Function,
             required: true
+        },
+        togglePassword: {
+            type: Boolean
         }
     })
     
+    const emit = defineEmits(['update:modelValue', 'updateType']) // [Emit] part 1 (these two parts must be together)
+
+    let showPassword = ref(false)
+    const togglePassword = () => {
+        showPassword.value = !showPassword.value
+
+        let emitType = showPassword.value ? 'text' : 'password'
+        emit('updateType', {
+            'type': emitType,
+            'name': props.name
+        })
+    }
+
     const error = reactive({
         'exist': true,
         'message': null
     })
 
-    const emit = defineEmits(['update:modelValue']) // [Emit] part 1 (these two parts must be together)
 
     const blueColor = ref('rgb(50, 138, 241)') // completed color
     const grayColor = ref('rgb(98, 116, 139)')
@@ -54,13 +71,19 @@
         <label :for="props.name">{{ props.label }}</label>
         <div class="input_field">
             <input 
-                :value="props.modelValue"
                 @input="updateModelValueAndValidate"
                 @blur="updateModelValueAndValidate"
+                :value="props.modelValue"
                 :type="props.type" 
                 :name="props.name"
                 :placeholder="props.placeholder">
             <div class="input_icon">
+            
+                <div v-show="props.togglePassword">
+                    <EyeSymbol v-if="showPassword" @toggle-password-visibility="togglePassword" /> 
+                    <EyeSlashSymbol v-else @toggle-password-visibility="togglePassword" />
+                </div>
+
                 <svg 
                     xmlns="http://www.w3.org/2000/svg" 
                     x="0px" y="0px" 
@@ -78,14 +101,11 @@
             </div>
         </div>
         <span class="field_error">{{ error.message }}</span>
-
-
     </div>
 </template>
 
 
 <style scoped>
-/* SHARE THE CSS WITH PASSWORD AND CONFIRM PASSWORD COMPONENT */
     .field {
         display: flex;
         flex-direction: column;

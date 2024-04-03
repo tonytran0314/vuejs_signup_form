@@ -1,10 +1,7 @@
 <script setup>
-    import FieldBase from './form_components/FieldBase.vue'
-    import Password from './form_components/password_component/Password.vue'
-    import ConfirmPassword from './form_components/password_component/ConfirmPassword.vue'
-
-    import { ref } from 'vue'
+    import { ref, reactive } from 'vue'
     import { useToast } from "vue-toastification";
+    import BaseInput from './form/BaseInput.vue'
 
     const toast = useToast()
 
@@ -19,15 +16,6 @@
         }
     }
 
-    const completedFieldColor = ref('rgb(50, 138, 241)')
-    const notcompletedFieldColor = ref('rgb(98, 116, 139)')
-    
-    const fullname = ref('')
-    const email = ref('')
-    const password = ref('')
-    const confirmPassword = ref('')
-
-    // Nên gôm các biến liên quan đến fullname trong validation vào 1 object
     const fullnameValidation = (fullname) => {
         let error = {
             'exist': false,
@@ -140,38 +128,95 @@
         return error
     }
 
+    const updateInputType = (field) => {
+        if (field.name === 'password') {
+            password.type = field.type
+        }
+
+        if (field.name === 'confirmPassword') {
+            confirmPassword.type = field.type
+        }
+    }
+
+    const fullname = reactive({
+        'vmodel': '',
+        'type': 'text',
+        'name': 'fullname',
+        'label': 'Full Name',
+        'placeholder': 'Enter Full Name',
+        'validator': fullnameValidation
+    })
+
+    const email = reactive({
+        'vmodel': '',
+        'type': 'text',
+        'name': 'email',
+        'label': 'Email',
+        'placeholder': 'Enter Email',
+        'validator': emailValidation
+    })
+
+    const password = reactive({
+        'vmodel': '',
+        'type': 'password',
+        'name': 'password',
+        'label': 'Password',
+        'placeholder': 'Enter Password',
+        'validator': passwordValidation,
+        'toggle': true
+    })
+
+    const confirmPassword = reactive({
+        'vmodel': '',
+        'type': 'password',
+        'name': 'confirmPassword',
+        'label': 'Confirm Password',
+        'placeholder': 'Enter Password Again',
+        'validator': confirmPasswordValidation,
+        'toggle': true
+    })
 </script>
 
 <template>
     <form id="signup_form">
         <div class="form_title"><h1>Sign Up</h1></div>
         <div class="form_body">
-            <FieldBase 
-                label="Full Name"
-                v-model="fullname"
-                placeholder="Enter Full Name"
-                type="text" 
-                name="fullname"
-                :validator="fullnameValidation" />
-            <FieldBase 
-                label="Email"
-                v-model="email"
-                placeholder="Enter Email"
-                type="text"
-                name="email"
-                :validator="emailValidation" />
-            <Password 
-                label="Password"
-                v-model="password"
-                name="password"
-                placeholder="Enter Password"
-                :validator="passwordValidation" />
-            <ConfirmPassword 
-                label="Confirm Password"
-                v-model="confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                :validator="confirmPasswordValidation" />
+            <BaseInput
+                v-model="fullname.vmodel"
+                :type="fullname.type"
+                :name="fullname.name"
+                :label="fullname.label"
+                :placeholder="fullname.placeholder"
+                :validator="fullname.validator" />
+
+            <BaseInput
+                v-model="email.vmodel"
+                :type="email.type"
+                :name="email.name"
+                :label="email.label"
+                :placeholder="email.placeholder"
+                :validator="email.validator" />
+
+            <BaseInput
+                v-model="password.vmodel"
+                :type="password.type"
+                :name="password.name"
+                :label="password.label"
+                :placeholder="password.placeholder"
+                :validator="password.validator"
+                :togglePassword="password.toggle"
+                @updateType="updateInputType" />
+
+            <BaseInput
+                v-model="confirmPassword.vmodel"
+                :type="confirmPassword.type"
+                :name="confirmPassword.name"
+                :label="confirmPassword.label"
+                :placeholder="confirmPassword.placeholder"
+                :validator="confirmPassword.validator"
+                :togglePassword="confirmPassword.toggle"
+                @updateType="updateInputType" />
+
         </div>
         <button 
             type="submit"
