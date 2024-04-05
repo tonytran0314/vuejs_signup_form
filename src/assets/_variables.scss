@@ -34,7 +34,7 @@ $baseDistance:                    8px;
 @mixin input() {
     border: none;
     color: $white;
-    padding: $baseDistance/2 0;
+    padding: calc($baseDistance/2) 0;
     width: 100%;
     background-color: $formContainerBackgroundColor;
 }

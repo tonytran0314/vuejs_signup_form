@@ -76,7 +76,7 @@
     @import '../../assets/variables';
 
     .field {
-        @include displayColumn($baseDistance / 2);
+        @include displayColumn(calc($baseDistance / 2));
 
         label {
             color: $labelColor;
@@ -84,7 +84,7 @@
         
         .input_field {
             @include displayRow($baseDistance);
-            border-bottom: $baseDistance/4 solid $inputBottomBorderColor;
+            border-bottom: calc($baseDistance/4) solid $inputBottomBorderColor;
             justify-content: space-between;
 
             input {
