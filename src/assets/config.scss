@@ -1,0 +1,14 @@
+@import './variables';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'JetBrains Mono';
+}
+
+#app {
+    @include allWaysCenter();
+    @include fitScreenSize();
+    background-color: $mainBackgroundColor;
+}

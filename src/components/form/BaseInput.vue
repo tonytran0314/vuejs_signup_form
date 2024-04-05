@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, reactive } from 'vue'
+    import { ref } from 'vue'
     import EyeSymbol from './icon/EyeSymbol.vue';
     import EyeSlashSymbol from './icon/EyeSlashSymbol.vue';
 
@@ -62,11 +62,9 @@
                 :type="props.type" 
                 :name="props.name"
                 :placeholder="props.placeholder">
-            <div class="input_icon">
-                <div v-show="props.togglePassword">
-                    <EyeSymbol v-if="showPassword" @toggle-password-visibility="togglePassword" /> 
-                    <EyeSlashSymbol v-else @toggle-password-visibility="togglePassword" />
-                </div>
+            <div v-show="props.togglePassword">
+                <EyeSymbol v-if="showPassword" @toggle-password-visibility="togglePassword" /> 
+                <EyeSlashSymbol v-else @toggle-password-visibility="togglePassword" />
             </div>
         </div>
         <span class="field_error">{{ props.error }}</span>
@@ -74,62 +72,44 @@
 </template>
 
 
-<style scoped>
+<style lang="scss" scoped>
+    @import '../../assets/variables';
+
     .field {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
+        @include displayColumn($baseDistance / 2);
+
+        label {
+            color: $labelColor;
+        }
+        
+        .input_field {
+            @include displayRow($baseDistance);
+            border-bottom: $baseDistance/4 solid $inputBottomBorderColor;
+            justify-content: space-between;
+
+            input {
+                @include input();
+
+                &:focus {
+                    outline: none;
+                }
+
+                &::placeholder {
+                    color: $placeHolderColor; 
+                    opacity: 1; /* Firefox */
+                    font-size: 1.1em;
+                }
+
+                &::-ms-input-placeholder { /* Edge 12-18 */
+                    color: $placeHolderColor;
+                    font-size: 1.1em;
+                }
+            }
+        }
+
+        .field_error {
+            color: $errorColor;
+        }
     }
 
-    .field label {
-        color: rgb(98, 116, 139);
-        /* background-color: yellow; */
-    }
-
-    .field input {
-        border: none;
-        color: rgb(255, 255, 255);
-        padding: 4px 0;
-        width: 100%;
-        background-color: rgb(14, 23, 39);
-        /* background-color: rgb(255, 255, 255); */
-    }
-
-    .field input:focus {
-        outline: none;
-    }
-
-    .input_field {
-        border-bottom: 2px solid rgb(16, 32, 53);
-        display: flex;
-        justify-content: space-between;
-        gap: 8px;
-        /* background-color: red; */
-    }
-
-    .input_icon {
-        height: 24px;
-        display: flex;
-        gap: 16px;
-        /* background-color: skyblue; */
-    }
-
-    .field_error {
-        color: rgb(243, 72, 125);
-    }
-
-    .field_error ul {
-        margin-left: 32px;
-    }
-
-    ::placeholder {
-        color: rgb(65, 79, 96);
-        opacity: 1; /* Firefox */
-        font-size: 1.1em;
-    }
-
-    ::-ms-input-placeholder { /* Edge 12-18 */
-        color: rgb(65, 79, 96);
-        font-size: 1.1em;
-    }
 </style>

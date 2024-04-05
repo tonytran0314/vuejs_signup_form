@@ -8,12 +8,12 @@
   </div>
 </template>
 
-<style scoped>
+<style lang="scss">
+  @import './assets/variables';
   .container {
-    width: auto;
-    height: auto;
-    background-color: rgb(14, 23, 39);
-    padding: 56px;
-    border-radius: 16px;
+    @include horizontalCenter();
+    background-color: $formContainerBackgroundColor;
+    padding: $baseDistance * 7;
+    border-radius: $baseDistance * 2;
   }
 </style>

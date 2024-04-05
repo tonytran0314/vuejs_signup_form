@@ -236,37 +236,28 @@
     </form>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+    @import '../assets/variables';
+
     #signup_form {
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-        width: 400px;
+        @include displayColumn($baseDistance * 5);
+        width: $baseDistance * 50;
+
+        .form_title {
+            text-align: center;
+            color: $white;
+        }
+
+        .form_body {
+            @include displayColumn($baseDistance * 3);
+        }
+
+        #signup_button {
+            @include button($buttonBackgroundColor);
+        }
     }
 
-    .form_title {
-        text-align: center;
-        color: rgb(255, 255, 255);
-    }
-
-    .form_body {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    #signup_button {
-        background-color: rgb(50, 138, 241);
-        border: none;
-        color: rgb(255, 255, 255);
-        font-size: 1.1em;
-        border-radius: 24px;
-        padding: 10px 0;
-        cursor: pointer;
-    }
-
-    @media (max-width: 524px) {
+    @media (max-width: $baseDistance * 66) {
         #signup_form {
             width: 100%;
         }
