@@ -5,14 +5,22 @@
 
     const toast = useToast()
 
-    let hasFieldErrors = ref(true)
-
     const submitHandle = () => {
-        console.log(hasFieldErrors.value)
-        if(hasFieldErrors.value === true) {
-            toast.error(`You haven't completed the form`)
-        } else {
-            toast.success('Sign Up Successfully')
+        const fullnameError = fullnameValidation(fullname.vmodel)
+        const emailError = emailValidation(email.vmodel)
+        const passwordError = passwordValidation(password.vmodel)
+        const confirmPasswordError = confirmPasswordValidation(confirmPassword.vmodel)
+
+        fullname.error = fullnameError.exist ? fullnameError.message : null
+        email.error = emailError.exist ? emailError.message : null
+        password.error = passwordError.exist ? passwordError.message : null
+        confirmPassword.error = confirmPasswordError.exist ? confirmPasswordError.message : null
+
+        if (!fullname.error && 
+            !email.error && 
+            !password.error && 
+            !confirmPassword.error) {
+                toast.success('Sign Up Successfully')
         }
     }
 
@@ -118,13 +126,14 @@
                 'message': errors_list.empty
             }
         }
-
-        if(password.value !== confirmPassword ) { 
+        
+        if(password.vmodel !== confirmPassword ) { 
             error = {
                 'exist': true,
                 'message': errors_list.unmatch
             }
         }
+
         return error
     }
 
@@ -144,7 +153,7 @@
         'name': 'fullname',
         'label': 'Full Name',
         'placeholder': 'Enter Full Name',
-        'validator': fullnameValidation
+        'error': null
     })
 
     const email = reactive({
@@ -153,7 +162,7 @@
         'name': 'email',
         'label': 'Email',
         'placeholder': 'Enter Email',
-        'validator': emailValidation
+        'error': null
     })
 
     const password = reactive({
@@ -162,8 +171,8 @@
         'name': 'password',
         'label': 'Password',
         'placeholder': 'Enter Password',
-        'validator': passwordValidation,
-        'toggle': true
+        'toggle': true,
+        'error': null
     })
 
     const confirmPassword = reactive({
@@ -172,8 +181,8 @@
         'name': 'confirmPassword',
         'label': 'Confirm Password',
         'placeholder': 'Enter Password Again',
-        'validator': confirmPasswordValidation,
-        'toggle': true
+        'toggle': true,
+        'error': null
     })
 </script>
 
@@ -187,7 +196,7 @@
                 :name="fullname.name"
                 :label="fullname.label"
                 :placeholder="fullname.placeholder"
-                :validator="fullname.validator" />
+                :error="fullname.error" />
 
             <BaseInput
                 v-model="email.vmodel"
@@ -195,7 +204,7 @@
                 :name="email.name"
                 :label="email.label"
                 :placeholder="email.placeholder"
-                :validator="email.validator" />
+                :error="email.error" />
 
             <BaseInput
                 v-model="password.vmodel"
@@ -203,8 +212,8 @@
                 :name="password.name"
                 :label="password.label"
                 :placeholder="password.placeholder"
-                :validator="password.validator"
                 :togglePassword="password.toggle"
+                :error="password.error"
                 @updateType="updateInputType" />
 
             <BaseInput
@@ -213,8 +222,8 @@
                 :name="confirmPassword.name"
                 :label="confirmPassword.label"
                 :placeholder="confirmPassword.placeholder"
-                :validator="confirmPassword.validator"
                 :togglePassword="confirmPassword.toggle"
+                :error="confirmPassword.error"
                 @updateType="updateInputType" />
 
         </div>
