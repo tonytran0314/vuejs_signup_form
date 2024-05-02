@@ -9,7 +9,7 @@
 </template>
 
 <style lang="scss">
-  @import './assets/variables';
+  @import '/src/assets/variables';
   .container {
     @include horizontalCenter();
     background-color: $formContainerBackgroundColor;

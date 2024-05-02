@@ -237,7 +237,7 @@
 </template>
 
 <style lang="scss" scoped>
-    @import '../assets/variables';
+    @import '/src/assets/variables';
 
     #signup_form {
         @include displayColumn($baseDistance * 5);

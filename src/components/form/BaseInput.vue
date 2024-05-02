@@ -73,7 +73,7 @@
 
 
 <style lang="scss" scoped>
-    @import '../../assets/variables';
+    @import '/src/assets/variables';
 
     .field {
         @include displayColumn(calc($baseDistance / 2));
