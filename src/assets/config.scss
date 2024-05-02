@@ -7,7 +7,7 @@
     font-family: 'JetBrains Mono';
 }
 
-#app {
+body {
     @include allWaysCenter();
     @include fitScreenSize();
     background-color: $mainBackgroundColor;
